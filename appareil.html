@@ -9,19 +9,19 @@
 	<title>Domotique</title>
 </head>
 <body>
-	<div class="container">
+	<div class="container" id="app">
 		<div class="row">
 			<div class="col-xs-12">
 				<h2>Les Appareils</h2>
-				<ul class="list-group" id="app" >
-					<li v-for="(e, index) in tableau" 
+				<ul class="list-group" >
+					<li v-for="(a,index) in tableau" 
 						class="list-group-item"
-						v-bind:class="{list-group-item-danger:getEteint(index),
-						  list-group-item-success:getAllume(index)}" 
-						 class="list-group-item list-group-item-danger">
-						<h4>{{e.nom}} -- {{e.status}}</h4>
-						<button @click="allumer()" class="btn btn-success"> ON</button>
-						<button @click="etient()" class="ml-2 btn btn-danger" > OFF</button>
+						v-bind:class="{
+						  'list-group-item-danger': getEteint(index),
+						  'list-group-item-success': getAllume(index)}" >
+						<h4>{{a.nom}} -- {{a.status}}</h4>
+						<button @click="allumer(index)" class="btn btn-success"> ON</button>
+						<button @click="eteint(index)" class="ml-2 btn btn-danger" > OFF</button>
 					</li>
 				</ul>
 				<br>
@@ -52,54 +52,56 @@
 		const app = new Vue(
 			{
 				el:'#app',
-			data :{
-				tableau: [{ nom:'TV',status:'allume'},
-							{ nom:'Xbox',status:'eteint'},
-							{ nom:'PlayStation',status:'allume'},],
-				nom:"",
-			},
-			methods:{
-				getAllume(i){
-					if(this.tableau[i].status=="alume"){
-						return true
-					}
-					else{
-						return false
-					}
+				data:{
+					tableau: [{ nom:'TV',status:'allume'},
+								{ nom:'Xbox',status:'eteint'},
+								{ nom:'PlayStation',status:'allume'}],
+					nom:"",
+					status:"",
 				},
-				getEtient(i){
-					if(this.tableau[i].status=="eteint"){
-						return true
-					}
-					else{
-						return false
-					}
-				},
-				ajouter(){
-					let e ={}
-					e.nom = this.nom
-					e.status = this.status
-					this.nom=''
-					this.status=''
-					this.tableau.push(e)
-				},
-				allumer(i){
-					this.tableau[i].status="allume"
-				},
-				eteint(i){
-					this.tableau[i].status="etient"
-				},
-				allumerTous(){
-					for(let appareil of this.tableau){
-						appareil.status='allume'
-					}
-				},
-				eteintTous(){
-					for(let appareil of this.tableau){
-						appareil.status='etient'
+				methods:{
+					getAllume(i){
+						if(this.tableau[i].status=="allume"){
+							return true
+						}
+						else{
+							return false
+						}
+					},
+					getEteint(i){
+						if(this.tableau[i].status=="eteint"){
+							return true
+						}
+						else{
+							return false
+						}
+					},
+					ajouter(){
+						let e ={}
+						e.nom = this.nom
+						e.status = this.status
+						this.nom=''
+						this.status=''
+						this.tableau.push(e)
+						localStorage.setItem("Appareils",this.tableau)
+					},
+					allumer(i){
+						this.tableau[i].status="allume"
+					},
+					eteint(i){
+						this.tableau[i].status="eteint"
+					},
+					allumerTous(){
+						for(let appareil of this.tableau){
+							appareil.status='allume'
+						}
+					},
+					eteintTous(){
+						for(let appareil of this.tableau){
+							appareil.status='eteint'
+						}
 					}
 				}
-			}
 			}
 		)
 	</script>
