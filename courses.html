@@ -35,11 +35,11 @@
 					</thead>
                     <tbody id="tab1" >
                         <tr v-for="(a,index) in tableau">
-                            <td v-bind:class="{'barre':acheter(index)}">
+                            <td v-bind:class="{'barre':isAcheter(index)}">
 								{{a.title}}
 							</td>
                             <td>
-                                <button v-model="status" class="btn btn-primary acheter" @click="acheter(index)">
+                                <button class="btn btn-primary acheter" @click="acheter(index)">
                                     <i class="fa fa-check" ></i>
                                 </button>
                                 <button class="btn btn-danger del" @click="supprimer(index)">
@@ -100,9 +100,21 @@
 						.then(info=>console.log(info))
 					},
 					acheter(i){
-						if(this.tableau[i].status==false){
+						if(this.tableau[i].status){
+							this.tableau[i].status=false
+						}
+						else{
 							this.tableau[i].status=true
+						}
+					},
+					isAcheter(i){
+						
+						if(this.tableau[i].status==false){
+
 							return true
+						}
+						else{
+							return false
 						}
 					}
                 },
