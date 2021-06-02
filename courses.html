@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="UTF-8">
+	<title>Courses</title>
+	<link rel="stylesheet"
+	 href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<style>
+		.barre{text-decoration: line-through;}
+	</style>
+</head>
+<body>
+	<!-- container container-fluid  -->
+	<div class="container"id="app" >
+		<div class="row">
+			<div class="offset-3 col-6">
+				<h1> Liste de courses</h1>
+					<br>
+					<div class="row">
+						<div class="col-6">
+							<input v-model="title" class="form-control" >
+						</div>
+						<div class="col-2">
+							<button id="btn1" class="btn btn-success" @click="ajouter()">
+								<i class="fa fa-plus" ></i>
+							</button>
+						</div>
+					</div>
+				<br>
+				<table  class="table table-striped">
+					<thead>
+						<th>Item</th>
+						<th>Action</th>
+					</thead>
+                    <tbody id="tab1" >
+                        <tr v-for="(a,index) in tableau">
+                            <td v-bind:class="{'barre':acheter(index)}">
+								{{a.title}}
+							</td>
+                            <td>
+                                <button v-model="status" class="btn btn-primary acheter" @click="acheter(index)">
+                                    <i class="fa fa-check" ></i>
+                                </button>
+                                <button class="btn btn-danger del" @click="supprimer(index)">
+                                    <i class="fa fa-trash" ></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+
+	<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+	<script>
+        const app = new Vue(
+            {
+                el:"#app",
+                data:{
+                    tableau:[],
+					title:''
+                },
+                methods:{
+                    ajouter(){
+						let i={}
+						i.title=this.title
+						i.status=false
+						this.title = ""
+
+						let url='./tp3/public/items/'
+						let param={}
+						param.method ='POST'
+						param.header={'content-Type':'application/json'}
+						param.body=JSON.stringify(i)
+
+						fetch(url,param)
+						.then(response => response.json())
+						.then(
+							info=>{
+								console.log(info)
+								i.id = info.id
+								this.tableau.push(i)
+							}
+						)
+                    },
+					supprimer(i){
+						this.tableau.splice(i,1)
+						let id=this.tableau[i].id
+						let url ='./tp3/public/items/'+id;
+					
+						let param={}
+						param.method="DELETE"
+						param.header={"content-Type":"application/json"}
+
+						fetch(url,param)
+						.then(response=>response.json())
+						.then(info=>console.log(info))
+					},
+					acheter(i){
+						if(this.tableau[i].status==false){
+							this.tableau[i].status=true
+							return true
+						}
+					}
+                },
+				mounted(){
+					let url= './tp3/public/items/'
+					fetch(url)
+					.then(response=>response.json())
+					.then(
+						tab=>{this.tableau = tab}
+					)
+				}
+            }
+        )
+
+	</script>
+</body>
+</html>
